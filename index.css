@@ -523,3 +523,24 @@ footer {
     .library-index { padding: 2.5rem 1rem 5rem; }
     .library-index h1 { margin-bottom: 3.2rem; font-size: clamp(2.6rem, 9vw, 4rem); }
 }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .grid-2>* {
+            min-width: 0;
+        }
+
+        @media (max-width: 900px) {
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+
+            .grid-2>* {
+                grid-column: span 1 !important;
+            }
+        }
