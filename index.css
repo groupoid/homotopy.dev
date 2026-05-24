@@ -473,7 +473,6 @@ section:first-of-type h2 {
     color: var(--accent-dark);
 }
 
-/* FOOTER */
 footer {
     background: linear-gradient(to bottom, #c9b1ff 50%);
     border-top: 1px solid var(--border);
@@ -524,23 +523,22 @@ footer {
     .library-index h1 { margin-bottom: 3.2rem; font-size: clamp(2.6rem, 9vw, 4rem); }
 }
 
-        .grid-2 {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2rem;
-            margin-top: 2rem;
-        }
+.grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-top: 2rem;
+}
 
-        .grid-2>* {
-            min-width: 0;
-        }
+.grid-2>* {
+    min-width: 0;
+}
 
-        @media (max-width: 900px) {
-            .grid-2 {
-                grid-template-columns: 1fr;
-            }
-
-            .grid-2>* {
-                grid-column: span 1 !important;
-            }
-        }
+@media (max-width: 900px) {
+    .grid-2 {
+        grid-template-columns: 1fr;
+    }
+    .grid-2>* {
+        grid-column: span 1 !important;
+    }
+}

@@ -1,4 +1,83 @@
-Developer's Site
-================
+Homotopy Development
+====================
 
-* Namdak Tonpa
+24 MAY 2026 Version 5.5.0 Modalities and Differential Geometry:
+
+* Flat Modality
+* Sharp Modality (derived through Flat)
+* Infinitesimal Shape Modality (de Rham stack)
+* Étale Maps
+* Formal Disc Bundle
+* Hopf Fibration
+* Homotopy Colimits
+* Left Fibers and computable J-equiv, J-iso
+* Single File anders.exe in favour of microkernel chm.exe
+* Distribution protocol converted to :save, :load, :bundle commands
+* Homological Algebra: H, B, Z
+
+2 MAY 2026 Version 5.1.0 Tesseract and K(G,n)-η:
+
+* Added strict canonical Nat to Kernel for spectral goodness at higher homotopies
+* Fix constcubes.anders module with improved DNF solver in formula.ml
+* Constructive K(G,n)-η in KGn.anders
+* Sn.anders and truncation.anders are using inernal Nat
+* Loop Spaces
+* Homotopy Nat with homotopical canonicity (only) is in natw.anders module
+* Updated Article: https://anders.groupoid.space/doc/anders.pdf
+
+30 APR 2026 Version 5.0.0 Disc and Equalizer:
+
+* Disc and Equalizer kernel primitives
+* Hub Spokes Disc in W
+* Lambda in W
+* Borel sets
+* Basic Topology
+* Locally Small Categories
+* Symmetric Monoidal Categories
+* OCaml 5.0
+
+27 JAN 2022 Version 1.1.1 Univalence:
+
+* Glue Type
+* 0, 1, 2, W Types
+* Coequalizer Type Axioms
+* Hub-Spokes Disc Type Axioms
+* Infinitesimal Shape Modality Axioms
+* Univalence, Unimorphism, Minivalence
+* Fibre Bundles
+* Homotopy Colimit, Suspension, Sphere, Truncations, Quotients
+* Propositions
+* K(G,n)
+
+11 DEC 2021 Version 0.12.1 Categorical Library:
+
+* Sigma with auto projections
+* Modules: algebra, category, functor, topos, abelian, kraus
+* LaTeX paper [LIPIcs]
+* Improved Huber rules
+* Support for PartialP primitive
+* Improved reduction rules for hypercubes
+
+15 JUL 2021 Version 0.7.2 Kan Operations:
+
+* Strict Equality (Id, ref, idJ)
+* Cubical Subtypes (Sub, inc, ouc)
+* Partials, Systems (Partial, [φ ↦ u])
+* Kan Operations (hcomp, transp)
+* Eliminate neutral elements (Mini-TT)
+* Initial Base Library: https://anders.groupoid.space/library/
+* New options `silent` and `indices`
+
+6 JUL 2021 Version 0.7.1 Binary Distribution:
+
+* OPAM package
+* ISC/DHARMA license
+* Homepage: https://anders.groupoid.space/
+
+5 JUL 2021 Version 0.7 MLTT Internalization:
+
+* Fibrant MLTT-style ΠΣ primitives with Leibniz equality in 500 LOC
+* Cofibrant CHM-style I primitives with pretypes hierarchy Vₙ in 500 LOC
+* Generalized Transport
+* Parser in 80 LOC
+* Lexer in 80 LOC

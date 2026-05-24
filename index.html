@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Anders HTS</title>
+    <title>Anders Modal HTS</title>
     <link rel="stylesheet" href="index.css">
 </head>
 
@@ -33,11 +33,11 @@
         <section>
             <h2>Abstract</h2>
             <div style="max-width:800px;margin:0 auto;text-align: center;">
-                <p><b>Anders</b> is a Modal HoTT proof assistant based on: classical MLTT-80 with 0, 1, 2, W types; CCHM
-                    in CHM flavour as cubical type system with hcomp/transp operations; HTS strict equality on pretypes;
+                <p><b>Anders</b> Modal Homotopy Type System is a Modal HoTT proof assistant based on: classical MLTT-80 with 0, 1, 2, W types; CCHM
+                    in CHM flavour as cubical type system with hcomp and transp operations; HTS strict equality on pretypes;
                     infinitesimal modality primitives for differential geometry purposes; Disc and Coequalizer
-                    primitives.</p>
-                <p>We tend not to touch general recursive higher inductive schemes, instead we will try to express as
+                    higher inductive type primitives.</p>
+                 <p>We tend not to touch general recursive higher inductive schemes, instead we will try to express as
                     much HIT as possible through Hub Spoke Disc, Coequalizer, and W primitives built into type checker
                     core in the style of HoTT/Coq homotopy library and Three-HIT theorem.</p>
 
@@ -83,8 +83,7 @@
                     <h3>Strict Canonicity</h3>
                     <hr>
                     <p><b>canonical.anders</b> — Natural numbers as a built-in type. Every closed term of type Nat
-                        normalizes
-                        to a constructor form, perfectly satisfying the canonicity property.</p>
+                          normalizes to a constructor form, perfectly satisfying the canonicity property.</p>
                     <pre class="code-snippet" style="font-size: 0.85rem;">
 def Nat : U := Nat
 def zero : Nat := 0
