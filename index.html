@@ -37,6 +37,7 @@
                     src="https://avatars.githubusercontent.com/u/17128096?s=200&v=4"></a>
             <ul class="nav-links">
                 <li><a href="index.html">Language</a></li>
+                <li><a href="https://anders.groupoid.space">Academic</a></li>
             </ul>
         </div>
     </nav>
@@ -45,7 +46,7 @@
         <div class="hero-content">
             <h1>Anders</h1>
             <p class="hero-subtitle">Derivative work of <b>cubicaltt</b> with <b>cohesivett</b> and <b>simplicialtt</b>
-                features.
+                features by Namdak Tonpa.
             </p>
         </div>
     </header>
@@ -61,6 +62,37 @@
                 <p>We tend not to touch general recursive higher inductive schemes, instead we will try to express as
                     much HIT as possible through Hub Spoke Disc, Coequalizer, and W primitives built into type checker
                     core in the style of HoTT/Coq homotopy library and Three-HIT theorem.</p>
+
+                <div
+                    style="margin-top: 2.5rem; display: flex; flex-wrap: wrap; justify-content: center; gap: 2rem; padding: 1rem 0;">
+                    <a href="https://anders.groupoid.space"
+                        style="display: inline-flex; align-items: center; text-decoration: none; font-weight: 600; color: var(--accent); gap: 0.5rem; transition: transform 0.2s;"
+                        onmouseover="this.style.transform='translateY(-2px)'"
+                        onmouseout="this.style.transform='translateY(0)'">
+                        <span>🌐</span> anders.groupoid.space
+                    </a>
+                    <a href="https://anders.groupoid.space/doc/anders.pdf"
+                        style="display: inline-flex; align-items: center; text-decoration: none; font-weight: 600; color: var(--text-primary); gap: 0.5rem; transition: transform 0.2s;"
+                        onmouseover="this.style.transform='translateY(-2px)'"
+                        onmouseout="this.style.transform='translateY(0)'">
+                        <img src="https://anders.groupoid.space/images/pdf.jpg" width="20" height="20" alt="PDF">
+                        anders.pdf
+                    </a>
+                    <a href="https://anders.groupoid.space/doc/homotopy.pdf"
+                        style="display: inline-flex; align-items: center; text-decoration: none; font-weight: 600; color: var(--text-primary); gap: 0.5rem; transition: transform 0.2s;"
+                        onmouseover="this.style.transform='translateY(-2px)'"
+                        onmouseout="this.style.transform='translateY(0)'">
+                        <img src="https://anders.groupoid.space/images/pdf.jpg" width="20" height="20" alt="PDF">
+                        homotopy.pdf
+                    </a>
+                    <a href="https://anders.groupoid.space/doc/cat.pdf"
+                        style="display: inline-flex; align-items: center; text-decoration: none; font-weight: 600; color: var(--text-primary); gap: 0.5rem; transition: transform 0.2s;"
+                        onmouseover="this.style.transform='translateY(-2px)'"
+                        onmouseout="this.style.transform='translateY(0)'">
+                        <img src="https://anders.groupoid.space/images/pdf.jpg" width="20" height="20" alt="PDF">
+                        cat.pdf
+                    </a>
+                </div>
             </div>
         </section>
 
@@ -96,9 +128,10 @@ def Nat-ind (C : Nat → U) (z : C zero)
 def ℕ := W (x : 𝟐), ℕ-ctor x
 def zero : ℕ := sup 𝟐 ℕ-ctor 0₂ (ind₀ ℕ)
 
-def 𝟎⟶ℕ (C : ℕ → U) (f : 𝟎 → ℕ) : C zero → C (sup 𝟐 ℕ-ctor 0₂ f)
- := transp (&lt;i> C (sup 𝟐 ℕ-ctor 0₂ (λ (x : 𝟎), ind₀ (PathP (&lt;_> ℕ)
-    (ind₀ ℕ x) (f x)) x @ i))) 0</pre>
+def 𝟎⟶ℕ (C : ℕ → U) (f : 𝟎 → ℕ)
+  : C zero → C (sup 𝟐 ℕ-ctor 0₂ f)
+ := transp (&lt;i> C (sup 𝟐 ℕ-ctor 0₂ (λ (x : 𝟎),
+    ind₀ (PathP (&lt;_> ℕ) (ind₀ ℕ x) (f x)) x @ i))) 0</pre>
 
                     <p>Demonstrates the computational integrity of cubical foundations where paths are first-class
                         residents.</p>
@@ -687,6 +720,8 @@ Anders theorem prover [MLTT-80] version 5.5.0
                                     Lumsdaine, and Anders Mörtberg]</a></li>
                             <li><a href="https://arxiv.org/pdf/1705.03307">Two-Level Type Theory and Applications.
                                     [Danil Annenkov, Paolo Capriotti, Nicolai Kraus, Christian Sattler]</a></li>
+                            <li><a href="https://anders.groupoid.space/doc/homotopy.pdf">Homotopy Theory for Anders.
+                                    [Groupoid Infinity]</a></li>
                         </ul>
                     </div>
                     <div>
@@ -704,6 +739,8 @@ Anders theorem prover [MLTT-80] version 5.5.0
                                     homotopy canonicity [Rafaël Bocquet]</a></li>
                             <li><a href="https://arxiv.org/abs/1902.06572">Canonicity and homotopy canonicity for
                                     cubical type theory [Thierry Coquand, Simon Huber, Christian Sattler]</a></li>
+                            <li><a href="https://anders.groupoid.space/doc/cat.pdf">Category Theory for Anders.
+                                    [Groupoid Infinity]</a></li>
                         </ul>
                         <h5>Functional Pearls & Surveys</h5>
                         <ul>
@@ -715,8 +752,8 @@ Anders theorem prover [MLTT-80] version 5.5.0
                                     Types at Work. [Ana Bove, Peter Dybjer]</a></li>
                             <li><a href="https://www.cs.kent.ac.uk/people/staff/dat/miranda/overview.pdf">An Overview of
                                     Miranda. [David Turner]</a></li>
-                            <li><a href="https://groupoid.github.io/anders/articles/anders.pdf">Anders: Modal Homotopy
-                                    Type System [Maksym Sokhatskyi]</a></li>
+                            <li><a href="https://anders.groupoid.space/doc/anders.pdf">Anders: Modal Homotopy
+                                    Type System. [Maksym Sokhatskyi]</a></li>
                             <li><a href="https://www.carloangiuli.com/papers/type-theory-book.pdf">Principles of
                                     Dependent Type Theory [Carlo Angiuli, Daniel Gratzer]</a></li>
                             <li><a href="https://groupoid.space/books/vol1/vol1.pdf">Volume I: Foundations. Introduction
