@@ -1,5 +1,4 @@
-Homotopy Development
-====================
+Developer's Site
+================
 
 * Namdak Tonpa
-
