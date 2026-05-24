@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anders — Minimal MLTT-80 (CCHM)</title>
+    <link rel="stylesheet" href="index.css?v=8">
+    <style>
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .grid-2>* {
+            min-width: 0;
+        }
+
+        @media (max-width: 900px) {
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+
+            .grid-2>* {
+                grid-column: span 1 !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="sticky">
+        <div class="nav-container">
+            <a href="https://groupoid.space" class="logo"><img width="50" style="margin-bottom:-15px;"
+                    src="https://avatars.githubusercontent.com/u/17128096?s=200&v=4"></a>
+            <ul class="nav-links">
+                <li><a href="index.html">Language</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <header>
+        <div class="hero-content">
+            <h1>Anders</h1>
+            <p class="hero-subtitle">Derivative work of <b>cubicaltt</b> with <b>cohesivett</b> and <b>simplicialtt</b>
+                features.
+            </p>
+        </div>
+    </header>
+
+    <main>
+        <section>
+            <h2>Abstract</h2>
+            <div style="max-width:800px;margin:0 auto;text-align: center;">
+                <p><b>Anders</b> is a Modal HoTT proof assistant based on: classical MLTT-80 with 0, 1, 2, W types; CCHM
+                    in CHM flavour as cubical type system with hcomp/transp operations; HTS strict equality on pretypes;
+                    infinitesimal modality primitives for differential geometry purposes; Disc and Coequalizer
+                    primitives.</p>
+                <p>We tend not to touch general recursive higher inductive schemes, instead we will try to express as
+                    much HIT as possible through Hub Spoke Disc, Coequalizer, and W primitives built into type checker
+                    core in the style of HoTT/Coq homotopy library and Three-HIT theorem.</p>
+            </div>
+        </section>
+
+        <section>
+            <h2>Constructive Natural Numbers</h2>
+            <p style="text-align: center; margin-bottom: 2rem;">Comparison of constructive natural numbers: structural
+                vs. homotopical representations.</p>
+            <div class="grid-2">
+                <div class="package-card">
+                    <h3>Strict Canonicity</h3>
+                    <hr>
+                    <p><b>canonical.anders</b> — Natural numbers as a built-in type. Every closed term of type Nat
+                        normalizes
+                        to a constructor form, perfectly satisfying the canonicity property.</p>
+                    <pre class="code-snippet" style="font-size: 0.85rem;">
+def Nat : U := Nat
+def zero : Nat := 0
+def succ (n : Nat) : Nat := S n
+
+def Nat-ind (C : Nat → U) (z : C zero)
+   (s : Π (n : Nat), C n → C (succ n)) (n : Nat) : C n
+ := ind-Nat C z s n</pre>
+                    <p>Standard constructive semantics with strict reduction paths.</p>
+                </div>
+
+                <div class="package-card">
+                    <h3>Homotopy Canonicity</h3>
+                    <hr>
+                    <p><b>homotopical.anders</b> — Homotopy-inductive representation. Extends canonicity to
+                        path-induction, ensuring that terms involving <code>transp</code> and <code>PathP</code>
+                        maintain computational behavior through normalization to values.</p>
+                    <pre class="code-snippet" style="font-size: 0.85rem;">
+def ℕ := W (x : 𝟐), ℕ-ctor x
+def zero : ℕ := sup 𝟐 ℕ-ctor 0₂ (ind₀ ℕ)
+
+def 𝟎⟶ℕ (C : ℕ → U) (f : 𝟎 → ℕ) : C zero → C (sup 𝟐 ℕ-ctor 0₂ f)
+ := transp (&lt;i> C (sup 𝟐 ℕ-ctor 0₂ (λ (x : 𝟎), ind₀ (PathP (&lt;_> ℕ)
+    (ind₀ ℕ x) (f x)) x @ i))) 0</pre>
+
+                    <p>Demonstrates the computational integrity of cubical foundations where paths are first-class
+                        residents.</p>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>Self Awareness</h2>
+            <div class="grid-2">
+                <div class="product-card">
+                    <h3>Internalization</h3>
+                    <p>Anders is designed to be self-hosting in its logic. The core constructs are represented within
+                        the language itself, allowing for proofs about the typechecker's own behaviors and properties.
+                    </p>
+                    <pre class="code-snippet">
+def Internalizing : MLTT-73
+ := ( Pi, Π-lambda, Π-apply, Π-β, Π-η,
+      Sigma, pair, pr₁, pr₂, Σ-β₁, Σ-β₂, Σ-η,
+      Path-1, idp-1, J-1, J-β, ★ )</pre>
+                </div>
+                <div class="product-card">
+                    <h3>Groupoid Interpretation</h3>
+                    <p>This Hofmann–Streicher groupoid model remains the classical starting point for understanding how
+                        type theory can carry intrinsic homotopical or higher-categorical content, even without explicit
+                        homotopy axioms.</p>
+                    <pre class="code-snippet">
+def CatGroupoid (X : U) (G : isGroupoid X)
+  : isCatGroupoid (PathCat X)
+ := ( idp X,
+      comp-Path X,
+      G,
+      sym X,
+      comp-inv-Path⁻¹ X,
+      comp-inv-Path X,
+      comp-Path-left X,
+      comp-Path-right X,
+      comp-Path-assoc X,
+      star
+    )
+</pre>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>MLTT and CCHM Foundations</h2>
+            <div class="grid-2">
+
+                <div class="package-card">
+                    <h3>Fibrational Systems</h3>
+
+                    <p>Pi-type is a space that contains dependent functions, which
+                        codomain type depends on value from domain type. As fiber domain
+                        present in every defined function, Pi-type is also a dependent product.
+                        Spaces of dependent functions are using in type theory to model
+                        various mathematical constructions, objects, types, or spaces and their maps:
+                        dependent functions, continuous maps, étale maps, fibre bundles, universal
+                        quantifier П-type, implications, etc.</p>
+
+                    <pre class="code-snippet" style="font-size: 0.85rem;">
+def Pi (A : U) (B : A → U) : U := Π (x : A), B x
+def Π-lambda (A : U) (B : A → U) (b : Pi A B) : Pi A B := λ (x : A), b x
+def Π-apply (A: U) (B: A → U) (f: Pi A B) (a: A) : B a := f a
+def Π-β (A : U) (B : A → U) (a : A) (f : Pi A B) : Path (B a) (Π-apply A B (Π-lambda A B f) a) (f a) := idp (B a) (f a)
+def Π-η (A : U) (B : A → U) (a : A) (f : Pi A B) : Path (Pi A B) f (λ (x : A), f x) := idp (Pi A B) f</pre>
+
+                    <p>Sigma-type is a space that contains dependent pairs
+                        where type of the second element depends on the value
+                        of the first element. As only one point of fiber domain
+                        present in every defined pair, Sigma-type is also a dependent sum,
+                        where fiber base is a disjoint union.</p>
+
+                    <pre class="code-snippet" style="font-size: 0.85rem;">
+def Sigma (A : U) (B : A → U) : U := summa (x: A), B x
+def pair (A: U) (B: A → U) (a: A) (b: B a) : Sigma A B := (a, b)
+def pr₁ (A: U) (B: A → U) (x: Sigma A B) : A := x.1
+def pr₂ (A: U) (B: A → U) (x: Sigma A B) : B (pr₁ A B x) := x.2
+def Σ-β₁ (A : U) (B : A → U) (a : A) (b : B a) : Path A a (pr₁ A B (a ,b)) := idp A a
+def Σ-β₂ (A : U) (B : A → U) (a : A) (b : B a) : Path (B a) b (pr₂ A B (a, b)) := idp (B a) b
+def Σ-η (A : U) (B : A → U) (p : Sigma A B) : Path (Sigma A B) p (pr₁ A B p, pr₂ A B p) := idp (Sigma A B) p</pre>
+                </div>
+
+                <div class="package-card">
+                    <h3>Identity Systems</h3>
+                    <p>Identity is realized via <code>PathP</code>, derived from the geometric interval I.
+                        Anders's foundations ensure the structural derivation of the J-induction principle
+                        from Kan-composition operations, forming a robust basis for univalent formalization.</p>
+
+                    <pre class="code-snippet" style="font-size: 0.85rem;">
+def singl (A: U) (a: A): U := Σ (x: A), Path A a x
+def eta (A: U) (a: A): singl A a := (a, idp A a)
+def sym (A: U) (a b : A) (p : Path A a b) : Path A b a := &lt;i> p @ -i
+def contr (A : U) (a b : A) (p : Path A a b) : Path (singl A a) (eta A a) (b, p) := &lt;i> (p @ i, &lt;j> p @ i /\ j)
+def transport (A B: U) (p : PathP (&lt;_> U) A B) (a: A): B := transp p 0 a
+def singl (A: U) (a: A): U := Σ (x: A), Path A a x
+def eta (A: U) (a: A): singl A a := (a, idp A a)
+def contr (A : U) (a b : A) (p : Path A a b) : Path (singl A a) (eta A a) (b, p) := &lt;i> (p @ i, &lt;j> p @ i /\ j)
+def trans_comp (A : U) (a : A) : Path A a (transport A A (&lt;i> A) a) := &lt;j> transp (&lt;_> A) -j a
+def subst (A : U) (P : A -> U) (a b : A) (p : Path A a b) (e : P a) : P b := transp (&lt;i> P (p @ i)) 0 e
+def subst-comp (A: U) (P: A → U) (a: A) (e: P a): Path (P a) e (subst A P a a (idp A a) e) := trans_comp (P a) e
+def D (A : U) : U₁ := Π (x y : A), Path A x y → U
+def J (A: U) (x: A) (C: D A) (d: C x x (idp A x)) (y: A) (p: Path A x y): C x y p
+ := subst (singl A x) (\ (z: singl A x), C x (z.1) (z.2)) (eta A x) (y, p) (contr A x y p) d
+def J-1 (A : U) (x : A) (C: D A) (d: C x x (idp A x)) (y: A) (p: Path A x y): C x y p
+ := subst (singl A x) (\ (z: singl A x), C x (z.1) (z.2)) (eta A x) (y, p) (contr A x y p) d
+def J-β (A : U) (a : A) (C : D A) (d: C a a (idp A a)) : Path (C a a (idp A a)) d (J A a C d a (idp A a))
+ := subst-comp (singl A a) (\ (z: singl A a), C a (z.1) (z.2)) (eta A a) d</pre>
+
+                    <pre class="code-snippet" style="font-size: 0.85rem;">
+def ∂ (i : I) := i ∨ -i
+def ∂-eq-neg-∂ (i : I) : Id I (∂ i) (∂ -i) := ref (∂ i)
+def min (i j : I) := i ∧ j
+def max (i j : I) := i ∨ j
+def ⊕ (i j : I) : I := (i ∧ -j) ∨ (-i ∧ j)
+def ⊕-comm (i j : I) : Id I (⊕ i j) (⊕ j i) := ref (⊕ i j)
+def ∧-comm (i j : I) : Id I (i ∧ j) (j ∧ i) := ref (i ∧ j)
+def ∨-comm (i j : I) : Id I (i ∨ j) (j ∨ i) := ref (i ∨ j)
+def ¬-of-∧ (i j : I) : Id I -(i ∧ j) (-i ∨ -j) := ref -(i ∧ j)
+def ¬-of-∨ (i j : I) : Id I -(i ∨ j) (-i ∧ -j) := ref -(i ∨ j)
+def ∧-distrib-∨ (i j k : I) : Id I ((i ∨ j) ∧ k) ((i ∧ k) ∨ (j ∧ k)) := ref ((i ∨ j) ∧ k)
+def ∨-distrib-∧ (i j k : I) : Id I ((i ∧ j) ∨ k) ((i ∨ k) ∧ (j ∨ k)) := ref ((i ∧ j) ∨ k)
+def ∧-assoc (i j k : I) : Id I (i ∧ (j ∧ k)) ((i ∧ j) ∧ k) := ref (i ∧ (j ∧ k))</pre>
+                </div>
+
+                <div class="package-card" style="grid-column: span 2;">
+                    <h3>Homotopy Type Theory</h3>
+                    <p><b>univalent.anders</b> — Implementation of the core of Homotopy Type Theory, providing path
+                        spaces, identity systems, and the J-induction principle within the semi-cubical framework.</p>
+
+                    <pre class="code-snippet" style="font-size: 0.85rem;">
+def idp (A : U) (x : A) : Path A x x := &lt;_> x
+def isContr (A: U) : U := Σ (x: A), Π (y: A), Path A x y
+def isContrSingl (A : U) (a : A) : isContr (singl A a) := ((a,idp A a),(\ (z:singl A a), contr A a z.1 z.2))
+def cong (A B : U) (f : A → B) (a b : A) (p : Path A a b) : Path B (f a) (f b) := &lt;i> f (p @ i)
+def ap (A: U) (a x: A) (B: A → U) (f: A → B a) (b: B a) (p : Path A a x) : Path (B a) (f a) (f x) := &lt;i> f (p @ i)
+def inv (A: U) (a b: A) (p: Path A a b): Path A b a := &lt;i> p @ -i
+def Path-η (A : U) (x y : A) (p : Path A x y) : Path (Path A x y) p (&lt;i> p @ i) := &lt;_> p
+def idp-left (A : U) (x y : A) (p : Path A x y) : Path (Path A x x) (&lt;_> x) (&lt;_> p @ 0) := &lt;_ _> x
+def idp-right (A : U) (x y : A) (p : Path A x y) : Path (Path A y y) (&lt;_> y) (&lt;_> p @ 1) := &lt;_ _> y
+def sym-sym-eq-idp (A : U) (x y : A) (p : Path A x y) : Path (Path A x y) p (sym A y x (sym A x y p)) := &lt;_> p
+def isProp (A : U) : U := Π (a b : A), Path A a b
+def isSet (A : U) : U := Π (a b : A) (a0 b0 : Path A a b), Path (Path A a b) a0 b0
+def isGroupoid (A : U) : U := Π (a b : A) (x y : Path A a b) (i j : Path (Path A a b) x y), Path (Path (Path A a b) x y) i j
+def SET : U₁ := Σ (X : U), isSet X
+def Ω' : U₁ := Σ (A : U), isProp A
+def section (A B : U) (f : A -> B) (g : B -> A) : U := Π (b : B), Path B (f (g b)) b
+def retract (A B : U) (f : A -> B) (g : B -> A) : U := Π (a : A), Path A (g (f a)) a
+def hmtpy (A : U) (x y : A) (p : Path A x y) : Path (Path A x x) (&lt;_> x) (&lt;i> p @ i /\ -i) := &lt;j i> p @ j /\ i /\ -i
+def plam (A : U) (f : I → A) : Path A (f 0) (f 1) := &lt;i> f i
+def elim (A : U) (a b : A) (p : Path A a b) : I → A := λ (i : I), p @ i
+def plam-elim (A : U) (f : I → A) : Id (I → A) (elim A (f 0) (f 1) (plam A f)) f := ref f
+def elim-plam (A : U) (a b : A) (p : Path A a b) : Path (Path A a b) (plam A (elim A a b p)) p := &lt;_> p</pre>
+                </div>
+            </div>
+        </section>
+
+
+        <section>
+            <h2>Decidability of Interval Boundaries</h2>
+            <div style="max-width:800px;margin:0 auto;text-align: center;">
+                <p>The structural consistency of the <b>CCHM</b> model over the face lattice requires a robust
+                    decidability mechanism for boundary conditions.
+                    Anders implements a <b>DNF</b> (Disjunctive Normal Form) solver to ensure the coherence of
+                    Kan-composition across multi-dimensional faces,
+                    guaranteeing that judgmental equality remains stable in the presence of complex boundary
+                    constraints.</p>
+            </div>
+            <div class="grid-2">
+                <div class="package-card" style="grid-column: span 2;">
+                    <h3>Accessing Higher Dimensions</h3>
+                    <p><b>constcubes.anders</b> — An extensive test suite defining higher-dimensional structures.
+                        From Squares and Cubes to 4D Tesseracts, these definitions verify the structural stability
+                        of normalization and face composition, ensuring the core remains sound as geometric complexity
+                        scales.</p>
+                    <pre class="code-snippet" style="font-size: 0.85rem;">
+def Line (A : I → U) : V := Π (i : I), A i
+
+def Square (A : U) (a₀ a₁ b₀ b₁ : A) (u  : Path A a₀ a₁) (v  : Path A b₀ b₁) (r₀ : Path A a₀ b₀) (r₁ : Path A a₁ b₁)
+  : U := PathP (&lt;i> (Path A (r₀ @ i) (r₁ @ i))) u v
+
+def Cube (A : U) (a₀ b₀ c₀ d₀ a₁ b₁ c₁ d₁ : A)
+    (ab₀ : Path A a₀ b₀) (cd₀ : Path A c₀ d₀) (ac₀ : Path A a₀ c₀) (bd₀ : Path A b₀ d₀)
+    (ab₁ : Path A a₁ b₁) (cd₁ : Path A c₁ d₁) (ac₁ : Path A a₁ c₁) (bd₁ : Path A b₁ d₁)
+    (s₀ : Square A a₀ b₀ c₀ d₀ ab₀ cd₀ ac₀ bd₀) (s₁ : Square A a₁ b₁ c₁ d₁ ab₁ cd₁ ac₁ bd₁)
+    (pa : Path A a₀ a₁) (pb : Path A b₀ b₁) (pc : Path A c₀ c₁) (pd : Path A d₀ d₁)
+    (sab : Square A a₀ b₀ a₁ b₁ ab₀ ab₁ pa pb) (scd : Square A c₀ d₀ c₁ d₁ cd₀ cd₁ pc pd)
+    (sac : Square A a₀ c₀ a₁ c₁ ac₀ ac₁ pa pc) (sbd : Square A b₀ d₀ b₁ d₁ bd₀ bd₁ pb pd) : U
+ := PathP (&lt;i> (Square A (pa @ i) (pb @ i) (pc @ i) (pd @ i) (sab @ i) (scd @ i) (sac @ i) (sbd @ i))) s₀ s₁
+
+def Tesseract (A : U) (a₀ b₀ c₀ d₀ a₁ b₁ c₁ d₁ a₂ b₂ c₂ d₂ a₃ b₃ c₃ d₃ : A)
+    (ab₀ : Path A a₀ b₀) (cd₀ : Path A c₀ d₀) (ac₀ : Path A a₀ c₀) (bd₀ : Path A b₀ d₀)
+    (ab₁ : Path A a₁ b₁) (cd₁ : Path A c₁ d₁) (ac₁ : Path A a₁ c₁) (bd₁ : Path A b₁ d₁)
+    (s₀ : Square A a₀ b₀ c₀ d₀ ab₀ cd₀ ac₀ bd₀) (s₁ : Square A a₁ b₁ c₁ d₁ ab₁ cd₁ ac₁ bd₁)
+    (a₀₁ : Path A a₀ a₁) (b₀₁ : Path A b₀ b₁) (c₀₁ : Path A c₀ c₁) (d₀₁ : Path A d₀ d₁)
+    (sab₀₁ : Square A a₀ b₀ a₁ b₁ ab₀ ab₁ a₀₁ b₀₁) (scd₀₁ : Square A c₀ d₀ c₁ d₁ cd₀ cd₁ c₀₁ d₀₁)
+    (sac₀₁ : Square A a₀ c₀ a₁ c₁ ac₀ ac₁ a₀₁ c₀₁) (sbd₀₁ : Square A b₀ d₀ b₁ d₁ bd₀ bd₁ b₀₁ d₀₁)
+    (cu₀₁ : Cube A a₀ b₀ c₀ d₀ a₁ b₁ c₁ d₁ ab₀ cd₀ ac₀ bd₀ ab₁ cd₁ ac₁ bd₁ s₀ s₁ a₀₁ b₀₁ c₀₁ d₀₁ sab₀₁ scd₀₁ sac₀₁ sbd₀₁)
+    (ab₂ : Path A a₂ b₂) (cd₂ : Path A c₂ d₂) (ac₂ : Path A a₂ c₂) (bd₂ : Path A b₂ d₂)
+    (ab₃ : Path A a₃ b₃) (cd₃ : Path A c₃ d₃) (ac₃ : Path A a₃ c₃) (bd₃ : Path A b₃ d₃)
+    (s₂ : Square A a₂ b₂ c₂ d₂ ab₂ cd₂ ac₂ bd₂) (s₃ : Square A a₃ b₃ c₃ d₃ ab₃ cd₃ ac₃ bd₃)
+    (a₂₃ : Path A a₂ a₃) (b₂₃ : Path A b₂ b₃) (c₂₃ : Path A c₂ c₃) (d₂₃ : Path A d₂ d₃)
+    (sab₂₃ : Square A a₂ b₂ a₃ b₃ ab₂ ab₃ a₂₃ b₂₃) (scd₂₃ : Square A c₂ d₂ c₃ d₃ cd₂ cd₃ c₂₃ d₂₃)
+    (sac₂₃ : Square A a₂ c₂ a₃ c₃ ac₂ ac₃ a₂₃ c₂₃) (sbd₂₃ : Square A b₂ d₂ b₃ d₃ bd₂ bd₃ b₂₃ d₂₃)
+    (cu₂₃ : Cube A a₂ b₂ c₂ d₂ a₃ b₃ c₃ d₃ ab₂ cd₂ ac₂ bd₂ ab₃ cd₃ ac₃ bd₃ s₂ s₃ a₂₃ b₂₃ c₂₃ d₂₃ sab₂₃ scd₂₃ sac₂₃ sbd₂₃)
+    (a₀₂ : Path A a₀ a₂) (b₀₂ : Path A b₀ b₂) (c₀₂ : Path A c₀ c₂) (d₀₂ : Path A d₀ d₂)
+    (a₁₃ : Path A a₁ a₃) (b₁₃ : Path A b₁ b₃) (c₁₃ : Path A c₁ c₃) (d₁₃ : Path A d₁ d₃)
+    (sab₀₂ : Square A a₀ b₀ a₂ b₂ ab₀ ab₂ a₀₂ b₀₂) (scd₀₂ : Square A c₀ d₀ c₂ d₂ cd₀ cd₂ c₀₂ d₀₂)
+    (sac₀₂ : Square A a₀ c₀ a₂ c₂ ac₀ ac₂ a₀₂ c₀₂) (sbd₀₂ : Square A b₀ d₀ b₂ d₂ bd₀ bd₂ b₀₂ d₀₂)
+    (sab₁₃ : Square A a₁ b₁ a₃ b₃ ab₁ ab₃ a₁₃ b₁₃) (scd₁₃ : Square A c₁ d₁ c₃ d₃ cd₁ cd₃ c₁₃ d₁₃)
+    (sac₁₃ : Square A a₁ c₁ a₃ c₃ ac₁ ac₃ a₁₃ c₁₃) (sbd₁₃ : Square A b₁ d₁ b₃ d₃ bd₁ bd₃ b₁₃ d₁₃)
+    (sa : Square A a₀ a₁ a₂ a₃ a₀₁ a₂₃ a₀₂ a₁₃) (sb : Square A b₀ b₁ b₂ b₃ b₀₁ b₂₃ b₀₂ b₁₃)
+    (sc : Square A c₀ c₁ c₂ c₃ c₀₁ c₂₃ c₀₂ c₁₃) (sd : Square A d₀ d₁ d₂ d₃ d₀₁ d₂₃ d₀₂ d₁₃)
+    (cu₀₂ : Cube A a₀ b₀ c₀ d₀ a₂ b₂ c₂ d₂ ab₀ cd₀ ac₀ bd₀ ab₂ cd₂ ac₂ bd₂ s₀ s₂ a₀₂ b₀₂ c₀₂ d₀₂ sab₀₂ scd₀₂ sac₀₂ sbd₀₂)
+    (cu₁₃ : Cube A a₁ b₁ c₁ d₁ a₃ b₃ c₃ d₃ ab₁ cd₁ ac₁ bd₁ ab₃ cd₃ ac₃ bd₃ s₁ s₃ a₁₃ b₁₃ c₁₃ d₁₃ sab₁₃ scd₁₃ sac₁₃ sbd₁₃)
+    (cuab : Cube A a₀ b₀ a₁ b₁ a₂ b₂ a₃ b₃ ab₀ ab₁ a₀₁ b₀₁ ab₂ ab₃ a₂₃ b₂₃ sab₀₁ sab₂₃ a₀₂ b₀₂ a₁₃ b₁₃ sab₀₂ sab₁₃ sa sb)
+    (cucd : Cube A c₀ d₀ c₁ d₁ c₂ d₂ c₃ d₃ cd₀ cd₁ c₀₁ d₀₁ cd₂ cd₃ c₂₃ d₂₃ scd₀₁ scd₂₃ c₀₂ d₀₂ c₁₃ d₁₃ scd₀₂ scd₁₃ sc sd)
+    (cuac : Cube A a₀ c₀ a₁ c₁ a₂ c₂ a₃ c₃ ac₀ ac₁ a₀₁ c₀₁ ac₂ ac₃ a₂₃ c₂₃ sac₀₁ sac₂₃ a₀₂ c₀₂ a₁₃ c₁₃ sac₀₂ sac₁₃ sa sc)
+    (cubd : Cube A b₀ d₀ b₁ d₁ b₂ d₂ b₃ d₃ bd₀ bd₁ b₀₁ d₀₁ bd₂ bd₃ b₂₃ d₂₃ sbd₀₁ sbd₂₃ b₀₂ d₀₂ b₁₃ d₁₃ sbd₀₂ sbd₁₃ sb sd)
+ : U := PathP (&lt;i> (Cube A (a₀₂ @ i) (b₀₂ @ i) (c₀₂ @ i) (d₀₂ @ i) (a₁₃ @ i) (b₁₃ @ i) (c₁₃ @ i) (d₁₃ @ i)
+        (sab₀₂ @ i) (scd₀₂ @ i) (sac₀₂ @ i) (sbd₀₂ @ i) (sab₁₃ @ i) (scd₁₃ @ i) (sac₁₃ @ i) (sbd₁₃ @ i)
+        (cu₀₂ @ i) (cu₁₃ @ i) (sa @ i) (sb @ i) (sc @ i) (sd @ i)
+        (cuab @ i) (cucd @ i) (cuac @ i) (cubd @ i))) cu₀₁ cu₂₃
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>Anders 5.5.0 REPL</h2>
+            <p style="text-align: center; margin-bottom: 2rem;">Always support more than one syntax. The system supports Lean-compatible syntax for Π, Σ, and W types, alongside OCaml-based and Elixir-based implementations.</p>
+            <div style="max-width:720px;margin:0 auto; margin-bottom: 2rem;">
+                <pre class="code-snippet">
+$ anders preeval check library/book.anders
+Compiling Anders base library [lean]...
+  Checking foundations/mltt.anders... OK
+  Checking foundations/inductive.anders... OK
+  Checking foundations/univalent.anders... OK
+
+Anders base library check finished successfully.
+</pre>
+                </div>
+
+                <div style="max-width:720px;margin:0 auto;">
+                    <pre class="code-snippet">
+$ anders repl
+🧊 Anders Proof Assistant version 5.5.0
+Copyright © 2016–2026 Groupoid Infinity.
+https://homotopy.dev/
+
+Loaded: mltt
+Loaded: inductive
+Loaded: univalent
+> :eval zero
+TYPE: W (x : 𝟐), ℕ-ctor x
+TERM: sup 𝟐 ℕ-ctor 0₂ (ind₀ ℕ)
+>
+</pre>
+                </div>
+        </section>
+
+        <section>
+            <h2>MLTT Rules of Built-in Types</h2>
+            <p style="text-align: center; margin-bottom: 2rem;">Foundational inductive types are based on Martin-Löf's
+                intuitionistic type theory (MLTT-80). Instead of generic inductive schemes, the system provides
+                <b>0</b>, <b>1</b>, <b>2</b>, <b>Nat</b>, and well-founded trees <b>W-types</b> as primitives.
+            </p>
+            <div class="grid-2">
+                <div class="package-card">
+                    <h3>Empty, Unit, and Boolean Types</h3>
+                    <hr>
+                    <p><b>Empty (0)</b> represents logical falsehood. <b>Unit (1)</b> represents logical truth with
+                        constructor star (★). <b>Bool (2)</b> has two constructors false (0₂) and true (1₂).</p>
+                    <pre class="code-snippet" style="font-size: 0.85rem;">
+def Empty : U := 𝟎
+def Empty-elim (C : Empty → U) (z : Empty) : C z := ind₀ C z
+
+def Unit : U := 𝟏
+def star : Unit := ★
+def Unit-ind (C : Unit → U) (u : C star) (z : Unit) : C z := ind₁ C u z
+
+def Bool : U := 𝟐
+def false : Bool := 0₂
+def true : Bool := 1₂
+def Bool-ind (C : Bool → U) (f : C false) (t : C true) (z : Bool) : C z := ind₂ C f t z</pre>
+                </div>
+                <div class="package-card">
+                    <h3>Natural Numbers and W-Types</h3>
+                    <hr>
+                    <p><b>Nat</b> is a primitive type providing efficient normalization. Well-founded trees (<b>W</b>)
+                        are specified by a type A of shapes and a family B of positions.</p>
+                    <pre class="code-snippet" style="font-size: 0.85rem;">
+def Nat : U := Nat
+def Zero : Nat := 0
+def Succ (n : Nat) : Nat := S n
+def Nat-ind (C : Nat → U) (z : C Zero)
+    (s : Π (n : Nat), C n → C (Succ n)) (n : Nat) : C n
+ := ind-Nat C z s n
+
+def W (A : U) (B : A → U) : U := W A B
+def sup (A : U) (B : A → U) (a : A) (f : B a → W A B) : W A B := sup a f
+def W-ind (A : U) (B : A → U) (C : W A B → U)
+    (g : Π (a : A) (f : B a → W A B), (Π (b : B a), C (f b)) → C (sup A B a f))
+    (w : W A B) : C w := indᵂ A B C g w</pre>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>Higher Inductive Primitives</h2>
+            <p style="text-align: center; margin-bottom: 2rem;">
+                Anders provides coequalizers and hub-spoke discs as core higher inductive type (HIT) primitives.
+                Combined with W-types, these form a complete basis for synthetic homotopy theory.
+            </p>
+            <div class="grid-2">
+                <div class="package-card">
+                    <h3>Coequalizers</h3>
+                    <hr>
+                    <p>The coequalizer of two parallel maps <code>f, g : A → B</code> identifies the images of
+                        <code>f</code> and <code>g</code> in <code>B</code>. For every <code>a : A</code>, we have a
+                        path <code>f a = g a</code>.
+                    </p>
+                    <pre class="code-snippet" style="font-size: 0.85rem;">
+def coeq (A B : U) (f g : A → B) : U := coequ A B f g
+def iota (A B : U) (f g : A → B) (x : B) : coequ A B f g := ι₂ A B f g x
+def resp (A B : U) (f g : A → B) (x : A)
+  : Path (coequ A B f g) (iota A B f g (f x)) (iota A B f g (g x))
+ := &lt;i> resp A B f g x @ i
+
+def coequ-ind' (A B : U) (f g : A → B) (X : coequ A B f g → U)
+  (i : Π (b : B), X (iota A B f g b))
+  (ρ : Π (x : A), PathP (&lt;i> X (resp A B f g x @ i)) (i (f x)) (i (g x)))
+  (z : coequ A B f g) : X z
+ := coequ-ind A B f g X i ρ z</pre>
+                </div>
+                <div class="package-card">
+                    <h3>Hub-and-Spoke Discs</h3>
+                    <hr>
+                    <p>Attaches a "disc" to type <code>A</code> for every map <code>f : S → disc S A</code>. It adds a
+                        "hub" point for each <code>f</code> and a "spoke" path connecting the hub to <code>f s</code>
+                        for every <code>s : S</code>.</p>
+                    <pre class="code-snippet" style="font-size: 0.85rem;">
+def hs (S A : U) : U := disc S A
+def center (S A : U) (a : A) : hs S A := base S A a
+def hub' (S A : U) (f : S → hs S A) : hs S A := hub S A f
+def spoke' (S A : U) (f : S → hs S A) (s : S)
+  : PathP (&lt;i> hs S A) (hub' S A f) (f s) := spoke S A f s
+
+def hs-ind (S A : U) (X : hs S A → U)
+  (nCenter : Π (a : A), X (center S A a))
+  (nHub : Π (f : S → hs S A) (nF : Π (s : S), X (f s)), X (hub' S A f))
+  (nSpoke : Π (f : S → hs S A) (nF : Π (s : S), X (f s)) (s : S),
+    PathP (&lt;i> X (spoke' S A f s @ i)) (nHub f nF) (nF s))
+  (z : hs S A) : X z := disc-ind S A X nCenter nHub nSpoke z</pre>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>Cohesive Modalities</h2>
+            <p style="text-align: center; margin-bottom: 2rem;">
+                Anders features native support for <b>cohesivett</b> modalities to model discrete, codiscrete, and
+                infinitesimal
+                structures, forming the basis for synthetic differential geometry.
+            </p>
+            <div class="grid-2">
+                <div class="package-card">
+                    <h3>Flat (♭) & Sharp (♯) Modalities</h3>
+                    <hr>
+                    <p>The Flat modality <code>♭</code> represents discrete topological structure. The Sharp modality
+                        <code>♯</code> represents codiscrete structures and is derived as the right adjoint to Flat:
+                        <code>♯ A := ♭ 𝟏 → A</code>.
+                    </p>
+                    <pre class="code-snippet" style="font-size: 0.85rem;">
+-- Flat Modality ♭ (Primitive)
+def Flat (A : U) := ♭ A
+def FlatUnit (A : U) := λ (a : A), ♭-unit a
+def FlatCounit (A : U) := λ (x : Flat A), ♭-counit x
+def FlatInd (A : U) := λ (B : Flat A → U), ind-♭ A B
+def ♭-η (A : U) := λ (x : Flat A), &lt;p> x
+def isDiscrete (A : U) := isEquiv A (Flat A) (FlatUnit A)
+
+-- Sharp Modality ♯ (Derived)
+def ♯ (A : U) := ♭ 𝟏 → A
+def ♯-unit (A : U) (a : A) : ♯ A := λ (_ : ♭ 𝟏), a
+def ♯-counit (A : U) (s : ♯ A) : A := s (♭-unit ★)
+def ♯-η (A : U) (s : ♯ A) : Path (♯ A) (♯-unit A (♯-counit A s)) s
+  := &lt;p> λ (x : ♭ 𝟏), s (♭-unit-𝟏-prop x @ p)</pre>
+                </div>
+                <div class="package-card">
+                    <h3>Infinitesimal Modality (ℑ)</h3>
+                    <hr>
+                    <p>The Infinitesimal modality <code>ℑ</code> (de Rham Stack) models formal proximity. A type
+                        <code>A</code> is coreduced if the unit map <code>ι A</code> is an equivalence. <code>ℑ A</code>
+                        is always coreduced.
+                    </p>
+                    <pre class="code-snippet" style="font-size: 0.85rem;">
+def ι (A : U) (a : A) : ℑ A := ℑ-unit a
+def μ (A : U) (a : ℑ (ℑ A)) := ℑ-join a
+def is-coreduced (A : U) : U := isEquiv A (ℑ A) (ι A)
+
+def ℑ-coreduced (A : U) : is-coreduced (ℑ A)
+ := isoToEquiv (ℑ A) (ℑ (ℑ A)) (ι (ℑ A)) (μ A)
+    (λ (x : ℑ (ℑ A)), &lt;_> x)
+    (λ (y : ℑ A), &lt;_> y)
+
+def ℑ-ind (A : U) (B : ℑ A → U)
+    (c : Π (a : ℑ A), is-coreduced (B a))
+    (f : Π (a : A), B (ι A a)) (a : ℑ A) : B a
+ := (c a (ind-ℑ A B (λ (x : A),
+         ι (B (ι A x)) (f x)) a)).1.1
+
+def ℑ-indβ (A : U) (B : ℑ A → U)
+    (c : Π (a : ℑ A), is-coreduced (B a))
+    (f : Π (a : A), B (ι A a)) (a : A) 
+  : Path (B (ι A a)) (f a) ((ℑ-ind A B c f) (ι A a))
+ := &lt;i> sec-equiv (B (ι A a)) (ℑ (B (ι A a)))
+                     (ι (B (ι A a)), c (ι A a)) (f a) @ -i</pre>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>Canonical Equations</h2>
+            <p style="text-align: center; margin-bottom: 2rem;">Simon Huber's reduction equations for Kan operations:
+                generalized transport (transp) and homogeneous composition (hcomp).</p>
+            <div class="grid-2">
+                <div class="package-card" style="grid-column: span 2;">
+                    <h3>Generalized Transport</h3>
+                    <hr>
+                    <pre class="code-snippet" style="font-size: 0.85rem;">
+transpⁱ N φ u₀ = u₀
+transpⁱ U φ A = A
+transpⁱ (Π (x : A), B) φ u₀ v = transpⁱ B(x/w) φ (u₀ w(i/0)),   w = transp-Fill⁻ⁱ A φ v, v : A(i/1)
+transpⁱ (Σ (x : A), B) φ u₀ = (transpⁱ A φ (u₀.1), transpⁱ B(x/v) φ(u₀.2)),   v = transp-Fillⁱ A φ u₀.1
+transpⁱ (Pathʲ A v w) φ u₀ = 〈j〉 compⁱ A [φ ↦ u₀ j, (j=0) ↦ v, (j=1) ↦ w] (u₀ j)
+transpⁱ G ψ u₀ = glue [φ(i/1) ↦ t′₁] a′₁ : G(i/1),   G = Glue [φ ↦ (T,w)] A
+transpⁱ (W (x : A), B) φ (sup a f) = sup (transpⁱ A φ a) (transpⁱ (B(v) → W) φ f),   v = transp-Fillⁱ A φ a
+transpⁱ (Coequ A B f g) φ (ι₂ b) = ι₂ (transpⁱ B φ b)
+transpⁱ (Coequ A B f g) φ (resp a j) = resp (transpⁱ A φ a) j
+transpⁱ (Disc S A) φ (base a) = base (transpⁱ A φ a)
+transpⁱ (Disc S A) φ (hub f) = hub (transpⁱ (S → Disc S A) φ f)
+transpⁱ (Disc S A) φ (spoke f y j) = spoke (transpⁱ (S → Disc S A) φ f) (transpⁱ S φ y) j
+transpⁱ (ℑ A) φ (ℑ-unit a) = ℑ-unit (transpⁱ A φ a)
+transpⁱ (♭ A) φ (♭-unit a) = ♭-unit (transpⁱ A φ a)
+transp⁻ⁱ A φ u = (transpⁱ A(i/1−i) φ u)(i/1−i) : A(i/0)
+transp-Fillⁱ A φ u₀ = transpʲ A(i/i∧j) (φ∨(i=0)) u₀ : A</pre>
+                </div>
+            </div>
+            <div class="grid-2" style="margin-top: 2rem;">
+                <div class="package-card" style="grid-column: span 2;">
+                    <h3>Homogeneous Composition</h3>
+                    <hr>
+                    <pre class="code-snippet" style="font-size: 0.85rem;">
+hcompⁱ N [φ ↦ 0] 0 = 0
+hcompⁱ N [φ ↦ S u] (S u₀) = S (hcompⁱ N [φ ↦ u] u₀)
+hcompⁱ U [φ ↦ E] A = Glue [φ ↦ (E(i/1), equivⁱ E(i/1−i))] A
+hcompⁱ (Π (x : A), B) [φ ↦ u] u₀ v = hcompⁱ B(x/v) [φ ↦ u v] (u₀ v)
+hcompⁱ (Σ (x : A), B) [φ ↦ u] u₀ = (v(i/1), compⁱ B(x/v) [φ ↦ u.2] u₀.2),   v = hcomp-Fillⁱ A [φ ↦ u.1] u₀.1
+hcompⁱ (Pathʲ A v w) [φ ↦ u] u₀ = 〈j〉 hcompⁱ A [ φ ↦ u j, (j = 0) ↦ v, (j = 1) ↦ w ] (u₀ j)
+hcompⁱ G [ψ ↦ u] u₀ = glue [φ ↦ t₁] a₁ : G,   G = Glue [φ ↦ (T,w)] A, t₁ = u(i/1) : T, a₁ = unglue u(i/1) : A, glue [φ ↦ t₁] a₁ = t₁ : T
+hcompⁱ (W (x : A), B) [φ ↦ sup a f] (sup a₀ f₀) = sup (hcompⁱ A [φ ↦ a] a₀) (hcompⁱ (B(v) → W) [φ ↦ f] f₀),   v = hcomp-Fillⁱ A [φ ↦ a] a₀
+hcompⁱ (Coequ A B f g) [φ ↦ ι₂ u] (ι₂ u₀) = ι₂ (hcompⁱ B [φ ↦ u] u₀)
+hcompⁱ (Coequ A B f g) [φ ↦ resp a j] (resp a₀ j) = resp (hcompⁱ A [φ ↦ a] a₀) j
+hcompⁱ (Disc S A) [φ ↦ base a] (base a₀) = base (hcompⁱ A [φ ↦ a] a₀)
+hcompⁱ (Disc S A) [φ ↦ hub f] (hub f₀) = hub (hcompⁱ (S → Disc S A) [φ ↦ f] f₀)
+hcompⁱ (Disc S A) [φ ↦ spoke f y j] (spoke f₀ y₀ j) = spoke (hcompⁱ (S → Disc S A) [φ ↦ f] f₀) (hcompⁱ S [φ ↦ y] y₀) j
+hcompⁱ (ℑ A) [φ ↦ ℑ-unit u] (ℑ-unit u₀) = ℑ-unit (hcompⁱ A [φ ↦ u] u₀)
+hcompⁱ (♭ A) [φ ↦ ♭-unit u] (♭-unit u₀) = ♭-unit (hcompⁱ A [φ ↦ u] u₀)
+hcomp-Fillⁱ A [φ ↦ u] u₀ = hcompʲ A [φ ↦ u(i/i∧j), (i=0) ↦ u₀] u₀ : A</pre>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>Proving with CCHM</h2>
+            <p style="text-align: center; margin-bottom: 2rem;">Basic concepts and interactive techniques mathematicians
+                should know before writing complex theorems in CCHM cores.</p>
+            <div class="grid-2">
+                <div class="package-card">
+                    <h3>Interactive Proof Development via Holes</h3>
+                    <hr>
+                    <p>Instead of writing proof terms all at once, you can place a question mark <code>?</code> (a proof
+                        hole) to query the type checker. The compiler halts at the hole and reports the target type
+                        along with the types of variables in the local context.</p>
+                    <pre class="code-snippet">
+Hole:
+
+  Expected Type: Path A a b
+  Local Context:
+    A : U
+    a : A
+    b : A
+    p : Path A a b</pre>
+                </div>
+                <div class="package-card">
+                    <h3>CCHM Primitives</h3>
+                    <hr>
+                    <p>Writing proofs in CCHM cores requires a set of distinct operations on geometric cubes:</p>
+                    <ul>
+                        <li><b>Dimensional Variables:</b> Paths are maps from the interval <code>I</code>. A path is
+                            written as a lambda <code>&lt;i&gt; expr</code> where <code>i</code> is an interval
+                            variable.</li>
+                        <li><b>Generalized Transport:</b> Transports elements along paths of types, providing
+                            computational path induction.</li>
+                        <li><b>Homogeneous Composition:</b> Computes a composition of paths, forming the basis
+                            for groupoid operations and higher dimensions.</li>
+                        <li><b>Equality Separation:</b> Maintains a strict equality <code>Id</code> on pretypes
+                            (supporting
+                            UIP) alongside univalent paths <code>Path</code> on fibrant types.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>Model Checker in OCaml</h2>
+            <p>Order peer review or replicated proof checker in another (possibly faster) language for double (triple)
+                checking.
+                Order as much implementations as possible, make them follow your syntax strictly, issue a spec. Anders
+                should be robust
+                and sound in all its syntaxes and across all its implementations.</p>
+            <div style="max-width:720px;margin:0 auto;">
+                <pre class="code-snippet">
+% dune exec anders check test/anders/constcubes.anders repl
+File “constcubes.anders” checked.
+
+Anders theorem prover [MLTT-80] version 5.5.0
+> </pre>
+            </div>
+        </section>
+
+        <section class="section-standards">
+            <h2>Open Source</h2>
+            <center>
+                <a href="https://github.com/groupoid/anders">
+                    <img style="width:150px;" src="https://n2o.dev/img/github.svg" alt="GitHub Logo">
+                </a>
+                <br>
+                <br>
+                <br>
+                <br>
+                <img src="https://openmoji.org/data/color/svg/1F1F8-1F1EA.svg" height=50
+                    style="margin:-00px;padding:0px;">
+                <img src="https://openmoji.org/data/color/svg/1F1FA-1F1E6.svg" height=50
+                    style="margin:-00px;padding:0px;">
+            </center>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-columns">
+            <div>
+                <h4>Anders</h4>
+                <p>Minimal cubical MLTT-80 implementation in OCaml and Elixir by <a rel="me"
+                        href="https://mathstodon.xyz/@5ht">5HT</a>.</p>
+            </div>
+            <div>
+                <h4>Bibliography</h4>
+                <div class="grid-2" style="font-size: 0.9rem;">
+                    <div>
+                        <h5>Foundational MLTT</h5>
+                        <ul>
+                            <li><a href="https://pure.tue.nl/ws/portalfiles/portal/2039924/256169.pdf">AUTOMATH, a
+                                    language for mathematics. [N.G. de Bruijn]</a></li>
+                            <li><a
+                                    href="https://archive-pml.github.io/martin-lof/pdfs/An-Intuitionistic-Theory-of-Types-1972.pdf">An
+                                    Intuitionistic Theory of Types. [Per Martin-Löf]</a></li>
+                            <li><a
+                                    href="https://archive-pml.github.io/martin-lof/pdfs/Bibliopolis-Book-retypeset-1984.pdf">Intuitionistic
+                                    Type Theory. [Per Martin-Löf]</a></li>
+                            <li><a
+                                    href="https://archive-pml.github.io/martin-lof/pdfs/Constructive-mathematics-and-computer-programming-1979.pdf">Constructive
+                                    Mathematics and Computer Programming. [Per Martin-Löf]</a></li>
+                            <li><a href="https://www.math.ias.edu/vladimir/sites/math.ias.edu.vladimir/files/HTS.pdf">HTS:
+                                    A simple type system with two identity types [Vladimir Voevodsky]</a></li>
+                        </ul>
+                        <h5>Internalization & Formalization</h5>
+                        <ul>
+                            <li><a href="https://arxiv.org/abs/1911.08174">Failure of Normalization in Impredicative
+                                    Type Theory with Proof-Irrelevant Propositional Equality. [Andreas Abel, Thierry
+                                    Coquand]</a></li>
+                            <li><a href="https://su.diva-portal.org/smash/get/diva2:1431287/FULLTEXT01.pdf">A Proof and
+                                    Formalization of the Initiality Conjecture of Dependent. [Menno de Boer]</a></li>
+                            <li><a href="https://guillaumebrunerie.github.io/pdf/initiality.pdf">A formalization of the
+                                    initiality conjecture of MLTT in Agda. [Guillaume Brunerie, Menno de Boer, Peter
+                                    Lumsdaine, and Anders Mörtberg]</a></li>
+                            <li><a href="https://arxiv.org/pdf/1705.03307">Two-Level Type Theory and Applications.
+                                    [Danil Annenkov, Paolo Capriotti, Nicolai Kraus, Christian Sattler]</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h5>Categorical Models</h5>
+                        <ul>
+                            <li><a href="https://www.math.mcgill.ca/rags/LCCC/LCCC-scan.pdf">Locally Cartesian Closed
+                                    Categories and Type Theory. [R.A.G. Seely]</a></li>
+                            <li><a href="https://link.springer.com/chapter/10.1007/3-540-61780-9_66">Internal Type
+                                    Theory: Categories with Families. [Peter Dybjer]</a></li>
+                            <li><a href="https://www.sciencedirect.com/science/article/pii/0168007286900539">Generalised
+                                    Algebraic Theories and Contextual Categories. [John Cartmell]</a></li>
+                            <li><a href="https://link.springer.com/chapter/10.1007/978-1-4471-0963-1_2">Syntax and
+                                    Semantics of Dependent Types. [Martin Hofmann]</a></li>
+                            <li><a href="https://arxiv.org/abs/2311.05849">Strict Rezk completions of models of HoTT and
+                                    homotopy canonicity [Rafaël Bocquet]</a></li>
+                            <li><a href="https://arxiv.org/abs/1902.06572">Canonicity and homotopy canonicity for
+                                    cubical type theory [Thierry Coquand, Simon Huber, Christian Sattler]</a></li>
+                        </ul>
+                        <h5>Functional Pearls & Surveys</h5>
+                        <ul>
+                            <li><a href="https://www.sciencedirect.com/science/article/pii/0167642395000216">An
+                                    algorithm for type-checking dependent types. [Thierry Coquand]</a></li>
+                            <li><a href="https://home.ttic.edu/~dreyer/course/papers/barendregt.pdf">Lambda Calculi with
+                                    Types. [Henk Barendregt]</a></li>
+                            <li><a href="https://www.cse.chalmers.se/~peterd/papers/DependentTypesAtWork.pdf">Dependent
+                                    Types at Work. [Ana Bove, Peter Dybjer]</a></li>
+                            <li><a href="https://www.cs.kent.ac.uk/people/staff/dat/miranda/overview.pdf">An Overview of
+                                    Miranda. [David Turner]</a></li>
+                            <li><a href="https://groupoid.github.io/anders/articles/anders.pdf">Anders: Modal Homotopy
+                                    Type System [Maksym Sokhatskyi]</a></li>
+                            <li><a href="https://www.carloangiuli.com/papers/type-theory-book.pdf">Principles of
+                                    Dependent Type Theory [Carlo Angiuli, Daniel Gratzer]</a></li>
+                            <li><a href="https://groupoid.space/books/vol1/vol1.pdf">Volume I: Foundations. Introduction
+                                    to Homotopy Type Theory [Maksym Sokhatskyi]</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>
