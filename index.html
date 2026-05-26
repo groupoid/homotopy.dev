@@ -568,8 +568,8 @@ hcompⁱ U [φ ↦ E] A = Glue [φ ↦ (E(i/1), equivⁱ E(i/1−i))] A
 hcompⁱ (Π (x : A), B) [φ ↦ u] u₀ v = hcompⁱ B(x/v) [φ ↦ u v] (u₀ v)
 hcompⁱ (Σ (x : A), B) [φ ↦ u] u₀ = (v(i/1), compⁱ B(x/v) [φ ↦ u.2] u₀.2),   v = hcomp-Fillⁱ A [φ ↦ u.1] u₀.1
 hcompⁱ (Pathʲ A v w) [φ ↦ u] u₀ = 〈j〉 hcompⁱ A [ φ ↦ u j, (j = 0) ↦ v, (j = 1) ↦ w ] (u₀ j)
-hcompⁱ G [ψ ↦ u] u₀ = glue [φ ↦ t₁] a₁ : G,   G = Glue [φ ↦ (T,w)] A, t₁ = u(i/1) : T, a₁ = unglue u(i/1) : A, glue [φ ↦ t₁] a₁ = t₁ : T
-hcompⁱ (W (x : A), B) [φ ↦ sup a f] (sup a₀ f₀) = sup (hcompⁱ A [φ ↦ a] a₀) (hcompⁱ (B(v) → W) [φ ↦ f] f₀),   v = hcomp-Fillⁱ A [φ ↦ a] a₀
+hcompⁱ G [ψ ↦ u] u₀ = glue [φ ↦ t₁] a₁ : G, G = Glue [φ ↦ (T,w)] A, t₁ = u(i/1) : T, a₁ = unglue u(i/1) : A, glue [φ ↦ t₁] a₁ = t₁ : T
+hcompⁱ (W (x : A), B) [φ ↦ sup a f] (sup a₀ f₀) = sup (hcompⁱ A [φ ↦ a] a₀) (hcompⁱ (B(v) → W) [φ ↦ f] f₀), v = hcomp-Fillⁱ A [φ ↦ a] a₀
 hcompⁱ (Coequ A B f g) [φ ↦ ι₂ u] (ι₂ u₀) = ι₂ (hcompⁱ B [φ ↦ u] u₀)
 hcompⁱ (Coequ A B f g) [φ ↦ resp a j] (resp a₀ j) = resp (hcompⁱ A [φ ↦ a] a₀) j
 hcompⁱ (Disc S A) [φ ↦ base a] (base a₀) = base (hcompⁱ A [φ ↦ a] a₀)
@@ -578,6 +578,74 @@ hcompⁱ (Disc S A) [φ ↦ spoke f y j] (spoke f₀ y₀ j) = spoke (hcompⁱ (
 hcompⁱ (ℑ A) [φ ↦ ℑ-unit u] (ℑ-unit u₀) = ℑ-unit (hcompⁱ A [φ ↦ u] u₀)
 hcompⁱ (♭ A) [φ ↦ ♭-unit u] (♭-unit u₀) = ♭-unit (hcompⁱ A [φ ↦ u] u₀)
 hcomp-Fillⁱ A [φ ↦ u] u₀ = hcompʲ A [φ ↦ u(i/i∧j), (i=0) ↦ u₀] u₀ : A</pre>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>Kan Operations</h2>
+            <p style="text-align: center; margin-bottom: 2rem;">
+                The geometric intuition and computational design behind reduction rules in CCHM.
+            </p>
+            <div class="package-cards-grid">
+                <div class="package-card">
+                    <h3>Discrete Types (0/1/2/N)</h3>
+                    <hr>
+                    <p><b>Discrete Universes</b> — Since discrete types have no non-trivial path coordinates, their Kan operations reduce to simple identities or distribute directly over constructors.</p>
+                    <ul>
+                        <li><b>Transport:</b> <code>transpⁱ N φ u₀ = u₀</code>. Since there are no non-trivial paths in <code>Nat</code>, transport is the identity.</li>
+                        <li><b>Composition:</b> <code>hcompⁱ N [φ ↦ S u] (S u₀) = S (hcompⁱ N [φ ↦ u] u₀)</code>. Composition distributes directly over constructors (like <code>S</code>) and computes by composing the constructors' arguments.</li>
+                    </ul>
+                </div>
+
+                <div class="package-card">
+                    <h3>Dependent Functions (Π)</h3>
+                    <hr>
+                    <p><b>Function Space Transport</b> — To apply a transported function to an argument, the argument is first mapped backward to the source domain using an inverse filler. The function evaluates, and the result is transported forward to the target codomain.</p>
+                    <ul>
+                        <li><b>Domain Fill:</b> <code>w = transp-Fill⁻ⁱ A φ v</code>. Runs transport backwards from the target domain at <code>i=1</code> to the source domain at <code>i=0</code>.</li>
+                        <li><b>Codomain Transport:</b> The function evaluates at <code>w(i/0)</code>, and the result is transported forward to the target codomain along the dependent path: <code>transpⁱ B(x/w) φ (u₀ w(i/0))</code>.</li>
+                    </ul>
+                </div>
+
+                <div class="package-card">
+                    <h3>Dependent Pairs (Σ)</h3>
+                    <hr>
+                    <p><b>Pair-Wise Operations</b> — Since the type of the second component depends on the first, we must use the first component's filler path to transport or compose the second component.</p>
+                    <ul>
+                        <li><b>First Component:</b> Transported or composed directly in <code>A</code> (yielding <code>v</code>).</li>
+                        <li><b>Second Component Dependency:</b> Transported along the first component's filler path: <code>transpⁱ B(x/v) φ (u₀.2)</code> where <code>v = transp-Fillⁱ A φ u₀.1</code>. For composition, a heterogeneous composition (<code>comp</code>) is performed.</li>
+                    </ul>
+                </div>
+
+                <div class="package-card">
+                    <h3>Path Types (PathP)</h3>
+                    <hr>
+                    <p><b>Higher-Dimensional Squares</b> — Transporting or composing paths generates a square. The Kan operations are defined point-wise along the path's inner dimension <code>j</code>, while satisfying boundary constraints at the endpoints.</p>
+                    <ul>
+                        <li><b>Endpoint Coherence:</b> Boundaries at <code>j=0</code> and <code>j=1</code> are constrained by the path's endpoints (<code>v</code> and <code>w</code>).</li>
+                        <li><b>Point-wise Composition:</b> Computes point-wise composition inside the base type: <code>〈j〉 hcompⁱ A [ φ ↦ u j, (j = 0) ↦ v, (j = 1) ↦ w ] (u₀ j)</code>.</li>
+                    </ul>
+                </div>
+
+                <div class="package-card">
+                    <h3>Universe & Glue Types</h3>
+                    <hr>
+                    <p><b>Gluing Boundaries</b> — The fibrancy of the universe <code>U</code> is achieved using the <code>Glue</code> type constructor, which "glues" a base type <code>A</code> to a family of equivalent types on a boundary face <code>φ</code>.</p>
+                    <ul>
+                        <li><b>Fibrancy of U:</b> Homogeneous composition of types in the universe is defined by gluing the sides to the base: <code>hcompⁱ U [φ ↦ E] A = Glue [φ ↦ (E(i/1), equivⁱ E(i/1−i))] A</code>.</li>
+                        <li><b>Glue Boundaries:</b> The <code>Glue</code> type acts as a bridge; on the face <code>φ</code> it behaves as <code>T</code>, and elsewhere it reduces to <code>A</code>.</li>
+                    </ul>
+                </div>
+
+                <div class="package-card">
+                    <h3>Modalities & HITs</h3>
+                    <hr>
+                    <p><b>Structural Modifiers</b> — Modalities (Flat <code>♭</code>, Infinitesimal <code>ℑ</code>) and Higher Inductive Types (HITs) like Coequalizers and Discs distribute Kan operations directly over their constructors.</p>
+                    <ul>
+                        <li><b>Modal transparency:</b> Modalities acts as discrete shape wrappers, meaning Kan operations on <code>♭ A</code> or <code>ℑ A</code> commute with their units: <code>transpⁱ (♭ A) φ (♭-unit a) = ♭-unit (transpⁱ A φ a)</code>.</li>
+                        <li><b>HIT constructor mapping:</b> Operations distribute point-wise over base constructors (e.g. <code>ι₂</code>, <code>base</code>) and adjust path constructors (e.g. <code>resp</code>, <code>spoke</code>) along the path dimensions.</li>
+                    </ul>
                 </div>
             </div>
         </section>
