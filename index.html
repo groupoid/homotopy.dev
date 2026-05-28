@@ -88,7 +88,7 @@
             </p>
 
             <div class="cosmic-cube-wrapper">
-                <div class="cube-scene" id="cubeScene">
+                <div class="cube-scene" id="cubeScene" style="margin-top:10px">
                     <div class="cube-3d" id="cube3d">
                         <!-- 6 faces of the cube (wireframe via transparent faces) -->
                         <div class="cube-face face-front"></div>
@@ -101,7 +101,7 @@
                         <!-- 8 vertices with labels -->
                         <!-- Vertex positions: (front/back) × (top/bottom) × (left/right) at ±90px -->
 
-                        <!-- Front-Bottom-Left: (∆, 𝟐, 𝟏) = STLC -->
+                        <!-- Front-Bottom-Left: (∆, 𝟐, 𝟏) = MLTT -->
                         <div class="cube-vertex" style="transform: translate3d(-90px, 90px, 90px);">
                             <div class="vertex-label">(∆, 𝟐, 𝟏)</div>
                         </div>
@@ -142,6 +142,7 @@
                         </div>
                     </div>
                 </div>
+                <br>
 
                 <!-- Axis Legend -->
                 <div class="cube-axes-legend">
@@ -171,14 +172,14 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr><td class="vtx-config">(∆, 𝟐, 𝟏)</td><td class="vtx-name">STLC</td><td>Simply typed λ-calculus</td></tr>
-                        <tr><td class="vtx-config">(∆, 𝟐, ℍ)</td><td class="vtx-name">Linear λ</td><td>λ-calculus, resource-sensitive computation</td></tr>
-                        <tr><td class="vtx-config">(∆, ℕ, 𝟏)</td><td class="vtx-name">HoTT</td><td>Homotopy Type Theory</td></tr>
-                        <tr><td class="vtx-config">(∆, ℕ, ℍ)</td><td class="vtx-name">Linear HoTT</td><td>Linear Homotopy Type Theory</td></tr>
-                        <tr><td class="vtx-config">(∇, 𝟐, 𝟏)</td><td class="vtx-name">Modal STLC</td><td>Modal Simply Typed λ-calculus</td></tr>
-                        <tr><td class="vtx-config">(∇, 𝟐, ℍ)</td><td class="vtx-name">∞-toposes</td><td>∞-toposes, Quantum Field Theory</td></tr>
-                        <tr><td class="vtx-config">(∇, ℕ, 𝟏)</td><td class="vtx-name">Modal HoTT</td><td>Synthetic Differential Geometry</td></tr>
-                        <tr><td class="vtx-config">(∇, ℕ, ℍ)</td><td class="vtx-name">Modal Linear HoTT</td><td>Modal Linear Homotopy Type Theory</td></tr>
+                        <tr><td class="vtx-config">(∆, 𝟐, 𝟏)</td><td class="vtx-name">ПΣ (MLTT-75)</td><td>Dependently typed λ-calculus — Per</td></tr>
+                        <tr><td class="vtx-config">(∆, 𝟐, ℍ)</td><td class="vtx-name">Linear ПΣ</td><td>λ-calculus, resource-sensitive computation — Urs</td></tr>
+                        <tr><td class="vtx-config">(∆, ℕ, 𝟏)</td><td class="vtx-name">HoTT</td><td>Homotopy Type Theory — Anders</td></tr>
+                        <tr><td class="vtx-config">(∆, ℕ, ℍ)</td><td class="vtx-name">Linear HoTT</td><td>Linear Homotopy Type Theory — Urs</td></tr>
+                        <tr><td class="vtx-config">(∇, 𝟐, 𝟏)</td><td class="vtx-name">Modal MLTT</td><td>Modal Dependently Typed λ-calculus – Anders</td></tr>
+                        <tr><td class="vtx-config">(∇, 𝟐, ℍ)</td><td class="vtx-name">∞-toposes</td><td>∞-toposes, Quantum Field Theory (dirtt, stt) — Dan</td></tr>
+                        <tr><td class="vtx-config">(∇, ℕ, 𝟏)</td><td class="vtx-name">Modal HoTT</td><td>Synthetic Differential Geometry — Anders</td></tr>
+                        <tr><td class="vtx-config">(∇, ℕ, ℍ)</td><td class="vtx-name">Modal Linear HoTT</td><td>Modal Linear Homotopy Type Theory — Urs</td></tr>
                     </tbody>
                 </table>
             </div>
